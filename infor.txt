@@ -1,0 +1,236 @@
+# VS Code 自製 AI Commit Message Extension 開發指南
+
+## 目標
+
+建立一個 **VS Code Extension**，可以：
+
+1.  讀取 `git diff --staged`
+2.  將 diff 傳送到你的 AI API
+3.  生成 commit message
+4.  自動填入 VS Code 的 commit 輸入框
+
+這樣就不需要使用外掛預設的 OpenAI API key，而是可以使用：
+
+-   自己的 OpenAI API key
+-   自架 API
+-   Ollama
+-   vLLM
+-   OpenRouter
+-   企業內部模型服務
+
+------------------------------------------------------------------------
+
+# 系統流程
+
+``` mermaid
+flowchart LR
+A[按下 Generate Commit Message] --> B[取得 git diff --staged]
+B --> C[呼叫 AI API]
+C --> D[AI 生成 commit message]
+D --> E[填入 VS Code Source Control]
+```
+
+------------------------------------------------------------------------
+
+# Extension 專案結構建議
+
+    commit-ai-extension/
+    │
+    ├─ src/
+    │  ├─ extension.ts
+    │  ├─ git.ts
+    │  ├─ llm.ts
+    │  └─ config.ts
+    │
+    ├─ package.json
+    └─ tsconfig.json
+
+  檔案           功能
+  -------------- -----------------------
+  extension.ts   VS Code command 與 UI
+  git.ts         取得 staged diff
+  llm.ts         呼叫 AI API
+  config.ts      讀取設定與 API key
+
+------------------------------------------------------------------------
+
+# Step 1 建立 VS Code Extension
+
+安裝工具
+
+``` bash
+npm install -g yo generator-code
+```
+
+建立 extension
+
+``` bash
+yo code
+```
+
+選擇
+
+    New Extension (TypeScript)
+
+------------------------------------------------------------------------
+
+# Step 2 取得 git staged diff
+
+``` ts
+import { execSync } from "child_process";
+
+export function getStagedDiff(): string {
+  try {
+    const diff = execSync("git diff --cached").toString();
+    return diff;
+  } catch (error) {
+    return "";
+  }
+}
+```
+
+------------------------------------------------------------------------
+
+# Step 3 呼叫 AI API
+
+``` ts
+import fetch from "node-fetch";
+
+export async function generateCommit(diff: string) {
+
+  const prompt = `
+請根據以下 git diff 產生一則簡潔的 commit message。
+使用 Conventional Commits 格式。
+
+${diff}
+`;
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer YOUR_API_KEY`
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [{role:"user",content:prompt}]
+    })
+  });
+
+  const data = await response.json();
+
+  return data.choices[0].message.content;
+}
+```
+
+------------------------------------------------------------------------
+
+# Step 4 寫入 VS Code commit box
+
+``` ts
+import * as vscode from "vscode";
+
+export async function setCommitMessage(message:string){
+
+  const gitExtension =
+    vscode.extensions.getExtension("vscode.git")?.exports;
+
+  const git = gitExtension.getAPI(1);
+  const repo = git.repositories[0];
+
+  repo.inputBox.value = message;
+
+}
+```
+
+------------------------------------------------------------------------
+
+# Step 5 建立 command
+
+``` ts
+vscode.commands.registerCommand(
+  "commitAI.generateMessage",
+  async () => {
+
+    const diff = getStagedDiff();
+
+    if(!diff){
+      vscode.window.showErrorMessage("沒有 staged changes");
+      return;
+    }
+
+    const message = await generateCommit(diff);
+
+    setCommitMessage(message);
+
+  }
+);
+```
+
+------------------------------------------------------------------------
+
+# 建議設定 (settings.json)
+
+``` json
+{
+  "commitAI.apiBaseUrl": "https://api.openai.com/v1",
+  "commitAI.model": "gpt-4o-mini",
+  "commitAI.language": "zh-TW",
+  "commitAI.commitStyle": "conventional"
+}
+```
+
+------------------------------------------------------------------------
+
+# 進階功能
+
+可以逐步加入
+
+  功能                   說明
+  ---------------------- -----------------------
+  Conventional Commits   feat / fix / refactor
+  diff 過濾              排除圖片與 lock file
+  多模型切換             OpenAI / Ollama
+  SecretStorage          安全儲存 API key
+  自動 PR 描述           生成 PR summary
+  Release Note           自動 changelog
+
+------------------------------------------------------------------------
+
+# 建議架構
+
+推薦使用
+
+    VS Code Extension
+          ↓
+    你的 AI Gateway
+          ↓
+    OpenAI / Ollama / vLLM
+
+優點
+
+-   API key 集中管理
+-   可以加 prompt 規則
+-   可以記錄 log
+-   多人共用
+
+------------------------------------------------------------------------
+
+# MVP 最小版本
+
+先完成這四件事
+
+1.  取得 staged diff
+2.  呼叫 AI API
+3.  生成 commit message
+4.  寫入 commit input box
+
+一天內就能完成。
+
+------------------------------------------------------------------------
+
+# 一句話總結
+
+自己寫 extension =
+
+**完全控制模型、API、安全與 workflow。**
