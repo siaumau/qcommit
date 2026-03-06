@@ -1,8 +1,9 @@
 {
-  "name": "commit-message-helper",
-  "displayName": "Commit Message Helper",
+  "name": "commit-message-anyai2helper",
+  "displayName": "Commit Message AI2Helper ",
   "description": "AI-powered commit message generator",
   "version": "0.0.1",
+  "publisher": "ericlifetw",
   "engines": {
     "vscode": "^1.85.0"
   },
