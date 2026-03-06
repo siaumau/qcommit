@@ -1,0 +1,7 @@
+.git
+.gitignore
+tsconfig.json
+vsc-extension-quickstart.md
+.eslintrc.json
+**/*.map
+**/*.ts
