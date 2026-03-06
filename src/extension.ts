@@ -81,6 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
               apiBaseUrl: config.getApiBaseUrl(),
               apiKey,
               model: config.getModel(),
+              language: config.getLanguage(),
               diff,
               outputChannel,
             });

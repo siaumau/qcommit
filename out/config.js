@@ -56,5 +56,9 @@ class Config {
         const config = vscode.workspace.getConfiguration('commitMessageHelper');
         return config.get('apiBaseUrl') || 'https://openrouter.ai/api/v1';
     }
+    getLanguage() {
+        const config = vscode.workspace.getConfiguration('commitMessageHelper');
+        return config.get('language') || 'zh-CN';
+    }
 }
 exports.Config = Config;

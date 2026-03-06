@@ -72,6 +72,12 @@
           "type": "string",
           "default": "https://openrouter.ai/api/v1",
           "description": "Base URL for the API endpoint"
+        },
+        "commitMessageHelper.language": {
+          "type": "string",
+          "enum": ["zh-CN", "zh-TW", "en", "en-US"],
+          "default": "zh-CN",
+          "description": "Language for generated commit messages (zh-CN: Simplified Chinese, zh-TW: Traditional Chinese, en/en-US: English)"
         }
       }
     }
