@@ -10,7 +10,7 @@
     "SCM Providers"
   ],
   "activationEvents": [
-    "onStartupFinished"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -19,16 +19,60 @@
         "command": "commitMessageHelper.generateMessage",
         "title": "Generate Commit Message",
         "icon": "$(sparkle)"
+      },
+      {
+        "command": "commitMessageHelper.setApiKey",
+        "title": "Set OpenRouter API Key"
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "commitMessageHelper.generateMessage"
+        }
+      ],
       "scmInputBox": [
         {
           "command": "commitMessageHelper.generateMessage",
-          "group": "inline",
+          "group": "inline"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "commitMessageHelper.generateMessage",
+          "group": "navigation",
+          "when": "view == scm"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "commitMessageHelper.generateMessage",
+          "group": "navigation",
           "when": "scmProvider == git"
         }
       ]
+    },
+    "keybindings": [
+      {
+        "command": "commitMessageHelper.generateMessage",
+        "key": "ctrl+alt+g",
+        "when": "scmProvider == git"
+      }
+    ],
+    "configuration": {
+      "title": "Commit Message Helper",
+      "properties": {
+        "commitMessageHelper.model": {
+          "type": "string",
+          "default": "openai/gpt-4o-mini",
+          "description": "AI model to use for generating commit messages (e.g., openai/gpt-4o-mini, openai/gpt-4-turbo, anthropic/claude-opus)"
+        },
+        "commitMessageHelper.apiBaseUrl": {
+          "type": "string",
+          "default": "https://openrouter.ai/api/v1",
+          "description": "Base URL for the API endpoint"
+        }
+      }
     }
   },
   "scripts": {
