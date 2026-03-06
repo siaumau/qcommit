@@ -4,6 +4,10 @@
   "description": "AI-powered commit message generator",
   "version": "0.0.2",
   "publisher": "ericlifetw",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/siaumau/qcommit"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },

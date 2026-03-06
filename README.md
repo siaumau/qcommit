@@ -1,6 +1,6 @@
 # Commit Message Helper
 
-**Languages:** [中文](#readme-zh) | [English](./README-EN.md)
+**Languages:** [中文](#readme-zh) | [English](https://github.com/siaumau/qcommit/blob/main/README-EN.md)
 
 AI 驱动的 VS Code 扩展，一键生成规范的 Commit Message！
 

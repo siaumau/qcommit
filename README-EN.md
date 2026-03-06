@@ -1,6 +1,6 @@
 # Commit Message Helper
 
-**Languages:** [中文](./README.md) | [English](#readme-en)
+**Languages:** [中文](https://github.com/siaumau/qcommit/blob/main/README.md) | [English](#readme-en)
 
 AI-powered VS Code extension for generating standardized Commit Messages in one click!
 

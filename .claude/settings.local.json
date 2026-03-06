@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm install:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(\"C:\\\\D\\\\eric\\\\qcommit\\\\.vscodeignore\":*)"
     ]
   }
 }
