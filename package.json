@@ -2,7 +2,7 @@
   "name": "commit-message-anyai2helper",
   "displayName": "Commit Message AI2Helper ",
   "description": "AI-powered commit message generator",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "ericlifetw",
   "repository": {
     "type": "git",
