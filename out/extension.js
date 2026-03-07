@@ -71,11 +71,13 @@ function activate(context) {
                 }
                 return;
             }
-            // Get staged diff
-            const diff = await (0, git_1.getStagedDiff)();
+            // Get diff based on configured mode
+            const diffMode = config.getDiffMode();
+            const diff = await (0, git_1.getStagedDiff)(diffMode);
             if (!diff) {
-                vscode.window.showWarningMessage('No staged changes found. Please stage some files first.');
-                outputChannel.appendLine('No staged changes found');
+                const modeLabel = diffMode === 'all' ? 'changes' : `${diffMode} changes`;
+                vscode.window.showWarningMessage(`No ${modeLabel} found. Please make some changes or stage files first.`);
+                outputChannel.appendLine(`No ${modeLabel} found`);
                 return;
             }
             outputChannel.appendLine(`Staged diff length: ${diff.length}`);

@@ -33,4 +33,9 @@ export class Config {
     const config = vscode.workspace.getConfiguration('commitMessageHelper');
     return config.get<string>('language') || 'zh-CN';
   }
+
+  getDiffMode(): string {
+    const config = vscode.workspace.getConfiguration('commitMessageHelper');
+    return config.get<string>('diffMode') || 'staged';
+  }
 }

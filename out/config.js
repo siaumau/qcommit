@@ -60,5 +60,9 @@ class Config {
         const config = vscode.workspace.getConfiguration('commitMessageHelper');
         return config.get('language') || 'zh-CN';
     }
+    getDiffMode() {
+        const config = vscode.workspace.getConfiguration('commitMessageHelper');
+        return config.get('diffMode') || 'staged';
+    }
 }
 exports.Config = Config;

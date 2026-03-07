@@ -36,21 +36,56 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getStagedDiff = getStagedDiff;
 const child_process_1 = require("child_process");
 const vscode = __importStar(require("vscode"));
-async function getStagedDiff() {
+async function getStagedDiff(mode = 'staged') {
     try {
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
         if (!workspaceFolder) {
             return null;
         }
         const cwd = workspaceFolder.uri.fsPath;
-        const diff = (0, child_process_1.execSync)('git diff --cached', {
-            cwd,
-            encoding: 'utf8',
-        });
+        let diffCommand;
+        let diff = '';
+        switch (mode) {
+            case 'unstaged':
+                // Only unstaged changes
+                diff = (0, child_process_1.execSync)('git diff', {
+                    cwd,
+                    encoding: 'utf8',
+                });
+                break;
+            case 'all': {
+                // All changes (staged + unstaged + untracked)
+                const stagedDiff = (0, child_process_1.execSync)('git diff --cached', {
+                    cwd,
+                    encoding: 'utf8',
+                });
+                const unstagedDiff = (0, child_process_1.execSync)('git diff', {
+                    cwd,
+                    encoding: 'utf8',
+                });
+                // Include untracked files
+                const untrackedFiles = (0, child_process_1.execSync)("git ls-files --others --exclude-standard", {
+                    cwd,
+                    encoding: 'utf8',
+                });
+                diff = stagedDiff + unstagedDiff;
+                if (untrackedFiles.trim()) {
+                    diff += '\n\n=== Untracked Files ===\n' + untrackedFiles;
+                }
+                break;
+            }
+            case 'staged':
+            default:
+                // Only staged changes
+                diff = (0, child_process_1.execSync)('git diff --cached', {
+                    cwd,
+                    encoding: 'utf8',
+                });
+        }
         return diff.trim() || null;
     }
     catch (error) {
-        console.error('Failed to get staged diff:', error);
+        console.error(`Failed to get ${mode} diff:`, error);
         return null;
     }
 }

@@ -35,14 +35,15 @@ Generate the commit message:`;
 規則：
 - 格式：<type>(<scope>): <subject>
 - 類型：feat(新功能), fix(修復), docs(文件), style(風格), refactor(重構), test(測試), chore(雜務), perf(效能)
-- 描述應使用英文或繁體中文，採用祈使語態，末尾無句號
+- 描述必須使用繁體中文，採用祈使語態，末尾無句號
 - 標題長度不超過72字符
 - 只回覆提交訊息，不包含解釋
+- 重要：所有回覆必須是繁體中文，不要用英文
 
 Git diff：
 ${diff}
 
-生成提交訊息：`;
+生成提交訊息（繁體中文）：`;
   } else {
     // Chinese (Default: Simplified Chinese / 默认：简体中文)
     prompt = `你是一个提交消息生成器。根据git diff生成简洁有意义的提交消息，遵循Conventional Commits格式。
@@ -50,14 +51,15 @@ ${diff}
 规则：
 - 格式：<type>(<scope>): <subject>
 - 类型：feat(新功能), fix(修复), docs(文档), style(风格), refactor(重构), test(测试), chore(杂务), perf(性能)
-- 描述应使用英文或简体中文，采用祈使语态，末尾无句号
+- 描述必须使用简体中文，采用祈使语态，末尾无句号
 - 标题长度不超过72字符
 - 只回复提交消息，不包含解释
+- 重要：所有回复必须是简体中文，不要用英文
 
 Git diff：
 ${diff}
 
-生成提交消息：`;
+生成提交消息（简体中文）：`;
   }
 
 

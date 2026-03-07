@@ -87,6 +87,16 @@
           ],
           "default": "zh-CN",
           "description": "Language for generated commit messages (zh-CN: Simplified Chinese, zh-TW: Traditional Chinese, en/en-US: English)"
+        },
+        "commitMessageHelper.diffMode": {
+          "type": "string",
+          "enum": [
+            "staged",
+            "unstaged",
+            "all"
+          ],
+          "default": "staged",
+          "description": "Which changes to include: staged (only staged files), unstaged (only unstaged changes), all (all changes)"
         }
       }
     }

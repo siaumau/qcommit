@@ -56,13 +56,15 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
 
-        // Get staged diff
-        const diff = await getStagedDiff();
+        // Get diff based on configured mode
+        const diffMode = config.getDiffMode();
+        const diff = await getStagedDiff(diffMode);
         if (!diff) {
+          const modeLabel = diffMode === 'all' ? 'changes' : `${diffMode} changes`;
           vscode.window.showWarningMessage(
-            'No staged changes found. Please stage some files first.'
+            `No ${modeLabel} found. Please make some changes or stage files first.`
           );
-          outputChannel.appendLine('No staged changes found');
+          outputChannel.appendLine(`No ${modeLabel} found`);
           return;
         }
 
