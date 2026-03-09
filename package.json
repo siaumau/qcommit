@@ -2,7 +2,7 @@
   "name": "commit-ai",
   "displayName": "CommitAI",
   "description": "AI-powered commit message generator",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "ericlifetw",
   "repository": {
     "type": "git",
