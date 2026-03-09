@@ -2,201 +2,174 @@
 
 **Languages:** [中文](#readme-zh) | [English](https://github.com/siaumau/qcommit/blob/main/README-EN.md)
 
-AI 驱动的 VS Code 扩展，一键生成规范的 Commit Message！
+AI 驅動的 VS Code 擴充功能，可根據 Git 變更自動產生 Commit Message，並直接填入 Source Control 的輸入框。
 
 <a id="readme-zh"></a>
 
-## ✨ 功能
+## 功能特色
 
-- 🤖 使用 AI 根据代码变更自动生成 Commit Message
-- 🌍 支持多语言：简体中文、繁体中文、英文
-- 📋 遵循 Conventional Commits 格式
-- ⚡ 支持多种 AI 模型（OpenAI、Anthropic、vLLM 等）
-- 🔐 安全存储 API Key（使用 VS Code 密钥管理）
+- 使用 AI 根據 staged、unstaged 或全部 diff 自動產生 Commit Message
+- 支援 Conventional Commits 風格
+- 支援多語言輸出：繁體中文、簡體中文、英文
+- 支援 OpenRouter、OpenAI、Anthropic、Ollama 與相容 OpenAI API 的服務
+- API Key 使用 VS Code Secret Storage 安全保存
+- 新增左側 Activity Bar 入口，可直接在側欄調整設定並執行產生功能
 
-## 🚀 快速开始
+## 安裝
 
-### 1. 安装扩展
-
-从 VS Code 扩展市场搜索 **Commit Message Helper** 或在命令行安装：
+在 VS Code Extension Marketplace 搜尋 **Commit Message Helper**，或使用指令安裝：
 
 ```bash
 code --install-extension ericlifetw.commit-message-anyai2helper
 ```
 
-### 2. 设置 API Key
+## 快速開始
 
-1. 打开命令面板：`Ctrl+Shift+P` (Mac: `Cmd+Shift+P`)
-2. 搜索并运行：**"Commit Message Helper: Set OpenRouter API Key"**
-3. 输入你的 API Key（例如 OpenRouter、OpenAI、Anthropic 等）
+### 1. 設定 API Key
 
-### 3. 配置模型和语言（可选）
+你可以用兩種方式設定：
 
-看下面的 **⚙️ 配置** 部分，配置你想使用的 AI 模型和语言。
+1. 開啟命令面板：`Ctrl+Shift+P`
+2. 執行 **Commit Message Helper: Set OpenRouter API Key**
 
-### 4. 使用
+或使用左側新的 `QCommit` 側欄：
 
-#### 快速生成（推荐）
-- **快捷键**：`Ctrl+Alt+G` (Mac: `Cmd+Option+G`)
-- **或** 点击 Source Control 面板提交框上的 **✨ 图标**
-- **或** 打开命令面板搜索 **"Generate Commit Message"**
+1. 點擊左側 Activity Bar 的 `QCommit` 圖示
+2. 在 `API Key` 欄位輸入金鑰
+3. 按下 `Save Settings`
 
-#### 自动填入
-生成的 Commit Message 会自动填入提交框，无需复制粘贴
+### 2. 調整模型與語言
 
----
+可在以下位置調整：
 
-## ⚙️ 配置
+- VS Code 設定頁搜尋 `commitMessageHelper`
+- `settings.json`
+- 左側 `QCommit` 側欄設定面板
 
-### 打开设置
+### 3. 產生 Commit Message
 
-**方式 1：VS Code 设置 UI（推荐）**
-1. 按 `Ctrl+,` (Mac: `Cmd+,`) 打开设置
-2. 搜索 `commitMessageHelper`
-3. 修改相关配置
+可透過以下方式使用：
 
-**方式 2：手动编辑 settings.json**
-1. 打开命令面板 → 搜索 **"Preferences: Open User Settings (JSON)"**
-2. 添加配置项：
+- 快捷鍵：`Ctrl+Alt+G`
+- Source Control 面板上的產生按鈕
+- 命令面板執行 **Generate Commit Message**
+- `QCommit` 左側側欄內的 `Generate Commit Message` 按鈕
+
+產生完成後，訊息會自動填入 Git commit 輸入框。
+
+## 左側側欄功能
+
+新版本加入了和 VS Code 左側工具列整合的設定面板：
+
+- 在 Activity Bar 顯示 `QCommit` 圖示
+- 點進去可直接修改 `API Key`、`API Base URL`、`Model`、`Language`、`Diff Mode`
+- 可直接清除已儲存的 API Key
+- 可直接從側欄執行 Commit Message 產生
+
+這讓常用設定不必每次都進 `settings.json` 或命令面板。
+
+## 設定說明
+
+### 可用設定
+
+| 設定鍵 | 型別 | 預設值 | 說明 |
+|--------|------|--------|------|
+| `commitMessageHelper.language` | string | `zh-CN` | 輸出語言，可用 `zh-CN`、`zh-TW`、`en`、`en-US` |
+| `commitMessageHelper.apiBaseUrl` | string | `https://openrouter.ai/api/v1` | API 端點 |
+| `commitMessageHelper.model` | string | `openai/gpt-4o-mini` | 使用的模型名稱 |
+| `commitMessageHelper.diffMode` | string | `staged` | Diff 範圍，可用 `staged`、`unstaged`、`all` |
+
+### `settings.json` 範例
 
 ```json
 {
-  "commitMessageHelper.language": "zh-CN",
-  "commitMessageHelper.apiBaseUrl": "https://openrouter.ai/api/v1",
-  "commitMessageHelper.model": "openai/gpt-4o-mini"
-}
-```
-
-### 可用配置项
-
-| 配置项 | 类型 | 默认值 | 说明 |
-|-------|------|--------|------|
-| `commitMessageHelper.language` | string | `zh-CN` | 生成语言：`zh-CN`(简体中文)、`zh-TW`(繁体中文)、`en`(英文) |
-| `commitMessageHelper.apiBaseUrl` | string | `https://openrouter.ai/api/v1` | API 服务地址（支持 OpenRouter、OpenAI、Ollama 等） |
-| `commitMessageHelper.model` | string | `openai/gpt-4o-mini` | 使用的 AI 模型名称 |
-
-### 配置示例
-
-#### 使用 OpenRouter（推荐）
-```json
-{
+  "commitMessageHelper.language": "zh-TW",
   "commitMessageHelper.apiBaseUrl": "https://openrouter.ai/api/v1",
   "commitMessageHelper.model": "openai/gpt-4o-mini",
-  "commitMessageHelper.language": "zh-CN"
+  "commitMessageHelper.diffMode": "staged"
 }
 ```
 
-#### 使用 OpenAI
+### 其他服務範例
+
+#### OpenAI
+
 ```json
 {
   "commitMessageHelper.apiBaseUrl": "https://api.openai.com/v1",
   "commitMessageHelper.model": "gpt-4o-mini",
-  "commitMessageHelper.language": "en"
+  "commitMessageHelper.language": "en",
+  "commitMessageHelper.diffMode": "all"
 }
 ```
 
-#### 使用本地 Ollama
+#### Ollama
+
 ```json
 {
   "commitMessageHelper.apiBaseUrl": "http://localhost:11434/v1",
   "commitMessageHelper.model": "llama2",
-  "commitMessageHelper.language": "zh-CN"
+  "commitMessageHelper.language": "zh-TW",
+  "commitMessageHelper.diffMode": "unstaged"
 }
 ```
 
-#### 繁体中文
-```json
-{
-  "commitMessageHelper.language": "zh-TW"
-}
-```
+## 快捷鍵
 
----
-
-## ⌨️ 快捷键
-
-| 快捷键 | 功能 |
+| 快捷鍵 | 功能 |
 |--------|------|
-| `Ctrl+Alt+G` | 生成 Commit Message |
-| `Ctrl+,` | 打开 VS Code 设置 |
-| `Ctrl+Shift+P` | 打开命令面板 |
+| `Ctrl+Alt+G` | 產生 Commit Message |
+| `Ctrl+Shift+P` | 開啟命令面板 |
+| `Ctrl+,` | 開啟 VS Code 設定 |
 
-*Mac 用户请将 `Ctrl` 改为 `Cmd`，`Alt` 改为 `Option`*
+## 安全性
 
----
+- API Key 儲存在 VS Code Secret Storage，不會直接寫進明文設定檔
+- API 通訊由你設定的服務端點負責
+- 擴充功能本身不會額外保存產生出的 Commit Message
 
-## 🔒 安全说明
+## 開發
 
-- API Key 使用 VS Code 的密钥管理机制存储，**不会保存在普通配置文件中**
-- 所有 API 通信均使用 HTTPS 加密
-- 不收集或存储任何生成的 Commit Message
+### 專案結構
 
----
-
-## 📚 开发
-
-### 项目结构
-
-```
+```text
 src/
-├── extension.ts    # VS Code 命令和 UI
-├── config.ts       # 配置管理和 API Key 安全存储
-├── git.ts          # 获取 git staged diff
-└── llm.ts          # AI API 调用和消息生成
+  extension.ts    VS Code 指令、側欄與 UI 註冊
+  config.ts       設定與 Secret Storage
+  git.ts          取得 Git diff
+  llm.ts          呼叫 AI API 產生訊息
+media/
+  activitybar.svg 左側 Activity Bar 圖示
 ```
 
-### 本地开发
+### 本機開發
 
 ```bash
-# 安装依赖
 npm install
-
-# 编译
 npm run compile
-
-# 监听文件变更
 npm run watch
-
-# 运行测试
-npm test
 ```
 
-### 调试
+### 除錯
 
-1. 打开项目文件夹到 VS Code
-2. 按 `F5` 启动调试窗口
-3. 在新的 VS Code 窗口中测试扩展
+1. 用 VS Code 開啟專案
+2. 按 `F5` 啟動 Extension Development Host
+3. 在新視窗中測試 Source Control 與左側 `QCommit` 側欄
 
----
+## FAQ
 
-## 📝 License
+**Q: 一定要用 OpenRouter 嗎？**  
+A: 不用，只要是相容 OpenAI API 的服務都可以，像 OpenAI、Anthropic、Ollama 都能設定。
+
+**Q: API Key 放在哪裡？**  
+A: 存在 VS Code 的安全儲存區，不會直接寫進 `settings.json`。
+
+**Q: 左側側欄能做什麼？**  
+A: 可以直接設定 API、模型、語言、diff mode，也可以直接按按鈕產生 Commit Message。
+
+**Q: 如果 AI 產生的訊息不滿意怎麼辦？**  
+A: 你可以手動修改，或再次執行產生功能取得另一個版本。
+
+## License
 
 MIT
-
----
-
-## 💡 常见问题
-
-**Q: 如何更换 AI 模型？**
-A: 在设置中修改 `commitMessageHelper.model` 配置项，或打开命令面板搜索 Settings 并搜索 `model`。
-
-**Q: 支持哪些 API 服务？**
-A: 支持 OpenRouter、OpenAI、Anthropic Claude、本地 Ollama 等任何兼容 OpenAI API 的服务。
-
-**Q: 如何切换语言？**
-A: 在设置中修改 `commitMessageHelper.language`，支持简体中文、繁体中文、英文三种语言。
-
-**Q: API Key 保存在哪里？**
-A: API Key 保存在 VS Code 的密钥存储中（Windows: Credential Manager、Mac: Keychain、Linux: gnome-keyring），安全可靠。
-
-**Q: 生成的消息不满意怎么办？**
-A: 可以手动修改提交框中的消息，或重新点击生成按钮获取新的建议。
-
----
-
-## 🐛 反馈和支持
-
-如有问题或建议，请：
-- 提交 GitHub Issue
-- 在 VS Code 扩展市场留下评论
-- 发送邮件至扩展发布者

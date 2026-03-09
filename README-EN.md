@@ -2,216 +2,177 @@
 
 **Languages:** [中文](https://github.com/siaumau/qcommit/blob/main/README.md) | [English](#readme-en)
 
-AI-powered VS Code extension for generating standardized Commit Messages in one click!
+AI-powered VS Code extension that generates commit messages from your Git diff and fills them directly into the Source Control input box.
 
 <a id="readme-en"></a>
 
-## ✨ Features
+## Features
 
-- 🤖 Automatically generate Commit Messages based on code changes using AI
-- 🌍 Multi-language support: Simplified Chinese, Traditional Chinese, English
-- 📋 Follows Conventional Commits format
-- ⚡ Support for multiple AI models (OpenAI, Anthropic, vLLM, etc.)
-- 🔐 Secure API Key storage (using VS Code key management)
+- Generate commit messages from staged, unstaged, or all Git changes
+- Supports Conventional Commits style
+- Multi-language output: Traditional Chinese, Simplified Chinese, and English
+- Works with OpenRouter, OpenAI, Anthropic, Ollama, and OpenAI-compatible APIs
+- Stores API keys securely with VS Code Secret Storage
+- Includes a new left Activity Bar entry with a sidebar settings panel
 
-## 🚀 Getting Started
+## Installation
 
-### 1. Install the Extension
-
-Search for **Commit Message Helper** in VS Code Extension Marketplace or install via command line:
+Search for **Commit Message Helper** in the VS Code Marketplace, or install it from the command line:
 
 ```bash
 code --install-extension ericlifetw.commit-message-anyai2helper
 ```
 
-### 2. Set Your API Key
+## Quick Start
 
-1. Open Command Palette: `Ctrl+Shift+P` (Mac: `Cmd+Shift+P`)
-2. Search and run: **"Commit Message Helper: Set OpenRouter API Key"**
-3. Enter your API Key (from OpenRouter, OpenAI, Anthropic, etc.)
+### 1. Set your API key
 
-### 3. Configure Model and Language (Optional)
+You can do this in two ways.
 
-See the **⚙️ Configuration** section below to set your preferred AI model and language.
+From the Command Palette:
 
-### 4. Usage
+1. Open `Ctrl+Shift+P`
+2. Run **Commit Message Helper: Set OpenRouter API Key**
 
-#### Quick Generation (Recommended)
-- **Keyboard Shortcut**: `Ctrl+Alt+G` (Mac: `Cmd+Option+G`)
-- **Or** Click the **✨ icon** above the commit message box in Source Control panel
-- **Or** Open Command Palette and search **"Generate Commit Message"**
+From the new `QCommit` sidebar:
 
-#### Auto-fill
-Generated Commit Messages are automatically filled into the commit input box—no copy-paste needed!
+1. Click the `QCommit` icon in the VS Code Activity Bar
+2. Enter your API key in the `API Key` field
+3. Click `Save Settings`
 
----
+### 2. Configure model and language
 
-## ⚙️ Configuration
+You can manage settings from:
 
-### How to Open Settings
+- VS Code Settings UI by searching `commitMessageHelper`
+- `settings.json`
+- The `QCommit` sidebar panel
 
-**Method 1: VS Code Settings UI (Recommended)**
-1. Press `Ctrl+,` (Mac: `Cmd+,`) to open Settings
-2. Search for `commitMessageHelper`
-3. Modify the relevant settings
+### 3. Generate a commit message
 
-**Method 2: Edit settings.json Manually**
-1. Open Command Palette → Search **"Preferences: Open User Settings (JSON)"**
-2. Add configuration items:
+Supported entry points:
+
+- Keyboard shortcut: `Ctrl+Alt+G`
+- The action button in the Source Control view
+- Command Palette: **Generate Commit Message**
+- The `Generate Commit Message` button inside the `QCommit` sidebar
+
+The generated text is automatically written into the Git commit input box.
+
+## Sidebar Panel
+
+This release adds a VS Code-style left sidebar integration.
+
+- A dedicated `QCommit` icon appears in the Activity Bar
+- Clicking it opens a settings panel inside the sidebar
+- You can edit `API Key`, `API Base URL`, `Model`, `Language`, and `Diff Mode`
+- You can clear the saved API key
+- You can trigger commit message generation directly from the panel
+
+This makes frequent configuration changes much faster than editing `settings.json` manually.
+
+## Configuration
+
+### Available settings
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `commitMessageHelper.language` | string | `zh-CN` | Output language: `zh-CN`, `zh-TW`, `en`, `en-US` |
+| `commitMessageHelper.apiBaseUrl` | string | `https://openrouter.ai/api/v1` | API endpoint |
+| `commitMessageHelper.model` | string | `openai/gpt-4o-mini` | Model name to use |
+| `commitMessageHelper.diffMode` | string | `staged` | Diff scope: `staged`, `unstaged`, or `all` |
+
+### Example `settings.json`
 
 ```json
 {
   "commitMessageHelper.language": "en",
   "commitMessageHelper.apiBaseUrl": "https://openrouter.ai/api/v1",
-  "commitMessageHelper.model": "openai/gpt-4o-mini"
-}
-```
-
-### Available Configuration Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `commitMessageHelper.language` | string | `zh-CN` | Generate language: `zh-CN` (Simplified Chinese), `zh-TW` (Traditional Chinese), `en` (English) |
-| `commitMessageHelper.apiBaseUrl` | string | `https://openrouter.ai/api/v1` | API endpoint (supports OpenRouter, OpenAI, Ollama, etc.) |
-| `commitMessageHelper.model` | string | `openai/gpt-4o-mini` | AI model name to use |
-
-### Configuration Examples
-
-#### Using OpenRouter (Recommended)
-```json
-{
-  "commitMessageHelper.apiBaseUrl": "https://openrouter.ai/api/v1",
   "commitMessageHelper.model": "openai/gpt-4o-mini",
-  "commitMessageHelper.language": "en"
+  "commitMessageHelper.diffMode": "staged"
 }
 ```
 
-#### Using OpenAI
+### Other service examples
+
+#### OpenAI
+
 ```json
 {
   "commitMessageHelper.apiBaseUrl": "https://api.openai.com/v1",
   "commitMessageHelper.model": "gpt-4o-mini",
-  "commitMessageHelper.language": "en"
+  "commitMessageHelper.language": "en",
+  "commitMessageHelper.diffMode": "all"
 }
 ```
 
-#### Using Local Ollama
+#### Ollama
+
 ```json
 {
   "commitMessageHelper.apiBaseUrl": "http://localhost:11434/v1",
   "commitMessageHelper.model": "llama2",
-  "commitMessageHelper.language": "en"
+  "commitMessageHelper.language": "en",
+  "commitMessageHelper.diffMode": "unstaged"
 }
 ```
 
-#### Using Anthropic Claude
-```json
-{
-  "commitMessageHelper.apiBaseUrl": "https://api.anthropic.com/v1",
-  "commitMessageHelper.model": "claude-opus",
-  "commitMessageHelper.language": "en"
-}
-```
-
----
-
-## ⌨️ Keyboard Shortcuts
+## Keyboard Shortcuts
 
 | Shortcut | Function |
 |----------|----------|
-| `Ctrl+Alt+G` | Generate Commit Message |
-| `Ctrl+,` | Open VS Code Settings |
+| `Ctrl+Alt+G` | Generate commit message |
 | `Ctrl+Shift+P` | Open Command Palette |
+| `Ctrl+,` | Open VS Code Settings |
 
-*Mac users: Replace `Ctrl` with `Cmd` and `Alt` with `Option`*
+## Security
 
----
+- API keys are stored in VS Code Secret Storage, not in plain text settings files
+- API communication is handled by the endpoint you configure
+- The extension does not persist generated commit messages on its own
 
-## 🔒 Security
+## Development
 
-- API Keys are stored using VS Code's secret management mechanism and **not saved in plain text config files**
-- All API communications use HTTPS encryption
-- We do not collect or store any generated Commit Messages
+### Project structure
 
----
-
-## 📚 Development
-
-### Project Structure
-
-```
+```text
 src/
-├── extension.ts    # VS Code commands and UI
-├── config.ts       # Configuration management and secure API Key storage
-├── git.ts          # Retrieves git staged diff
-└── llm.ts          # AI API calls and message generation
+  extension.ts    Commands, sidebar registration, and VS Code UI logic
+  config.ts       Configuration access and Secret Storage helpers
+  git.ts          Git diff collection
+  llm.ts          AI API calls and commit message generation
+media/
+  activitybar.svg Activity Bar icon for the sidebar
 ```
 
-### Local Development
+### Local development
 
 ```bash
-# Install dependencies
 npm install
-
-# Compile
 npm run compile
-
-# Watch for file changes
 npm run watch
-
-# Run tests
-npm test
 ```
 
 ### Debugging
 
-1. Open the project folder in VS Code
-2. Press `F5` to launch the Debug Extension window
-3. Test the extension in a new VS Code window
+1. Open the project in VS Code
+2. Press `F5` to launch the Extension Development Host
+3. Test both the Source Control action and the left `QCommit` sidebar
 
----
+## FAQ
 
-## 📝 License
+**Q: Do I have to use OpenRouter?**  
+A: No. Any OpenAI-compatible endpoint can work, including OpenAI, Anthropic, and Ollama setups.
+
+**Q: Where is the API key stored?**  
+A: In VS Code Secret Storage, not in `settings.json`.
+
+**Q: What can I do from the sidebar?**  
+A: You can update API settings, change the model, language, and diff mode, clear the saved API key, and trigger message generation.
+
+**Q: What if I do not like the generated message?**  
+A: Edit it manually or generate another one.
+
+## License
 
 MIT
-
----
-
-## 💡 FAQ
-
-**Q: How do I switch to a different AI model?**
-A: Modify the `commitMessageHelper.model` setting in your configuration, or open Settings (`Ctrl+,`) and search for "model".
-
-**Q: Which API services are supported?**
-A: We support OpenRouter, OpenAI, Anthropic Claude, local Ollama, and any service compatible with the OpenAI API.
-
-**Q: How do I change the language?**
-A: Modify the `commitMessageHelper.language` setting. We support Simplified Chinese, Traditional Chinese, and English.
-
-**Q: Where is my API Key stored?**
-A: Your API Key is stored in VS Code's secure storage (Windows: Credential Manager, Mac: Keychain, Linux: gnome-keyring), which is safe and reliable.
-
-**Q: What if I don't like the generated message?**
-A: You can manually edit the message in the commit box, or click the generate button again to get a new suggestion.
-
-**Q: Does this extension collect any data?**
-A: No, all processing is done locally through API calls. We don't collect or store any commit messages.
-
----
-
-## 🐛 Feedback & Support
-
-If you have any issues or suggestions:
-- Submit a GitHub Issue
-- Leave a comment on the VS Code Marketplace
-- Email the extension publisher
-
----
-
-## 🎯 Roadmap
-
-- [ ] Support for more languages
-- [ ] Custom prompt templates
-- [ ] Commit history analysis for better suggestions
-- [ ] GitHub/GitLab integration
-- [ ] Web UI for configuration

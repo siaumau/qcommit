@@ -48,6 +48,10 @@ class Config {
     async deleteApiKey() {
         await this.context.secrets.delete('commitMessageHelper.apiKey');
     }
+    async updateSetting(key, value) {
+        const config = vscode.workspace.getConfiguration('commitMessageHelper');
+        await config.update(key, value, vscode.ConfigurationTarget.Global);
+    }
     getModel() {
         const config = vscode.workspace.getConfiguration('commitMessageHelper');
         return config.get('model') || 'openai/gpt-4o-mini';
@@ -63,6 +67,9 @@ class Config {
     getDiffMode() {
         const config = vscode.workspace.getConfiguration('commitMessageHelper');
         return config.get('diffMode') || 'staged';
+    }
+    hasApiKey() {
+        return this.getApiKey().then((key) => Boolean(key));
     }
 }
 exports.Config = Config;

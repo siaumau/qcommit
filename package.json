@@ -19,6 +19,24 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "commitMessageHelper",
+          "title": "QCommit",
+          "icon": "media/activitybar.svg"
+        }
+      ]
+    },
+    "views": {
+      "commitMessageHelper": [
+        {
+          "id": "commitMessageHelper.sidebar",
+          "name": "Settings",
+          "type": "webview"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "commitMessageHelper.generateMessage",
@@ -47,6 +65,11 @@
           "command": "commitMessageHelper.generateMessage",
           "group": "navigation",
           "when": "view == scm"
+        },
+        {
+          "command": "commitMessageHelper.generateMessage",
+          "group": "navigation",
+          "when": "view == commitMessageHelper.sidebar"
         }
       ],
       "editor/title": [
