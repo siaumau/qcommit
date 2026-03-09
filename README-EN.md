@@ -14,6 +14,8 @@ AI-powered VS Code extension that generates commit messages from your Git diff a
 - Works with OpenRouter, OpenAI, Anthropic, Ollama, and OpenAI-compatible APIs
 - Stores API keys securely with VS Code Secret Storage
 - Includes a new left Activity Bar entry with a sidebar settings panel
+- Adds an `AI 提交` action button in the Source Control title area
+- Shows generation progress in the VS Code status bar
 
 ## Installation
 
@@ -53,11 +55,22 @@ You can manage settings from:
 Supported entry points:
 
 - Keyboard shortcut: `Ctrl+Alt+G`
+- The `AI 提交` button in the Source Control title area
 - The action button in the Source Control view
 - Command Palette: **Generate Commit Message**
 - The `Generate Commit Message` button inside the `QCommit` sidebar
 
 The generated text is automatically written into the Git commit input box.
+
+### 4. Watch generation status
+
+When generation starts, the VS Code status bar shows live progress states:
+
+- `QCommit: Generating commit message...`
+- `QCommit: Commit message ready`
+- `QCommit: Generation failed`
+
+This is more visible and persistent than a corner notification.
 
 ## Sidebar Panel
 
@@ -70,6 +83,14 @@ This release adds a VS Code-style left sidebar integration.
 - You can trigger commit message generation directly from the panel
 
 This makes frequent configuration changes much faster than editing `settings.json` manually.
+
+## Source Control Integration
+
+Besides the shortcut and sidebar, the extension now integrates more directly into the Source Control view.
+
+- An `AI 提交` button appears in the Source Control title area
+- Clicking it runs the same flow as `Ctrl+Alt+G`
+- The generated result is automatically filled into the commit input box
 
 ## Configuration
 
@@ -169,6 +190,9 @@ A: In VS Code Secret Storage, not in `settings.json`.
 
 **Q: What can I do from the sidebar?**  
 A: You can update API settings, change the model, language, and diff mode, clear the saved API key, and trigger message generation.
+
+**Q: Is the `AI 提交` button different from the keyboard shortcut?**  
+A: No. It triggers the same generation flow as `Ctrl+Alt+G`.
 
 **Q: What if I do not like the generated message?**  
 A: Edit it manually or generate another one.

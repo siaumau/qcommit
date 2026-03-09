@@ -14,6 +14,8 @@ AI 驅動的 VS Code 擴充功能，可根據 Git 變更自動產生 Commit Mess
 - 支援 OpenRouter、OpenAI、Anthropic、Ollama 與相容 OpenAI API 的服務
 - API Key 使用 VS Code Secret Storage 安全保存
 - 新增左側 Activity Bar 入口，可直接在側欄調整設定並執行產生功能
+- 新增 Source Control 右上角 `AI 提交` 按鈕
+- 生成時會在底部狀態列顯示進度狀態
 
 ## 安裝
 
@@ -51,11 +53,22 @@ code --install-extension ericlifetw.commit-message-anyai2helper
 可透過以下方式使用：
 
 - 快捷鍵：`Ctrl+Alt+G`
+- Source Control 右上角 `AI 提交` 按鈕
 - Source Control 面板上的產生按鈕
 - 命令面板執行 **Generate Commit Message**
 - `QCommit` 左側側欄內的 `Generate Commit Message` 按鈕
 
 產生完成後，訊息會自動填入 Git commit 輸入框。
+
+### 4. 查看生成狀態
+
+當你觸發產生功能時，VS Code 底部狀態列會顯示：
+
+- `QCommit: Generating commit message...`
+- `QCommit: Commit message ready`
+- `QCommit: Generation failed`
+
+這比右下角通知更持續，也更容易注意到目前狀態。
 
 ## 左側側欄功能
 
@@ -67,6 +80,14 @@ code --install-extension ericlifetw.commit-message-anyai2helper
 - 可直接從側欄執行 Commit Message 產生
 
 這讓常用設定不必每次都進 `settings.json` 或命令面板。
+
+## Source Control 整合
+
+除了快捷鍵與側欄外，現在也整合了 Source Control 操作區：
+
+- 右上角新增 `AI 提交` 按鈕
+- 點擊後會執行和 `Ctrl+Alt+G` 完全相同的功能
+- 生成完成後，會自動把結果填入 commit input box
 
 ## 設定說明
 
@@ -166,6 +187,9 @@ A: 存在 VS Code 的安全儲存區，不會直接寫進 `settings.json`。
 
 **Q: 左側側欄能做什麼？**  
 A: 可以直接設定 API、模型、語言、diff mode，也可以直接按按鈕產生 Commit Message。
+
+**Q: `AI 提交` 按鈕和快捷鍵有差別嗎？**  
+A: 沒有，兩者執行的是同一個生成流程。
 
 **Q: 如果 AI 產生的訊息不滿意怎麼辦？**  
 A: 你可以手動修改，或再次執行產生功能取得另一個版本。

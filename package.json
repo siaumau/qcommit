@@ -44,6 +44,11 @@
         "icon": "$(sparkle)"
       },
       {
+        "command": "commitMessageHelper.generateMessageTitle",
+        "title": "AI 提交",
+        "icon": "$(sparkle)"
+      },
+      {
         "command": "commitMessageHelper.setApiKey",
         "title": "Set OpenRouter API Key"
       }
@@ -58,6 +63,12 @@
         {
           "command": "commitMessageHelper.generateMessage",
           "group": "inline"
+        }
+      ],
+      "scm/title": [
+        {
+          "command": "commitMessageHelper.generateMessageTitle",
+          "group": "navigation"
         }
       ],
       "view/title": [

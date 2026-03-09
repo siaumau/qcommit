@@ -269,6 +269,8 @@ function activate(context) {
     console.log('=== Commit Message Helper activating ===');
     config = new config_1.Config(context);
     const outputChannel = vscode.window.createOutputChannel('Commit Message Helper');
+    const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    statusBarItem.name = 'QCommit Progress';
     // Command: Set API Key
     const setApiKeyCmd = vscode.commands.registerCommand('commitMessageHelper.setApiKey', async () => {
         const apiKey = await vscode.window.showInputBox({
@@ -287,6 +289,7 @@ function activate(context) {
         console.log('Generate commit message command triggered');
         outputChannel.appendLine(`[${new Date().toISOString()}] Command triggered`);
         try {
+            showGeneratingStatus(statusBarItem);
             // Check if API key is set
             const apiKey = await config.getApiKey();
             if (!apiKey) {
@@ -306,49 +309,49 @@ function activate(context) {
                 return;
             }
             outputChannel.appendLine(`Staged diff length: ${diff.length}`);
-            // Show progress
-            await vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: 'Generating commit message...',
-                cancellable: false,
-            }, async () => {
-                // Generate commit message
-                const message = await (0, llm_1.generateCommitMessage)({
-                    apiBaseUrl: config.getApiBaseUrl(),
-                    apiKey,
-                    model: config.getModel(),
-                    language: config.getLanguage(),
-                    diff,
-                    outputChannel,
-                });
-                outputChannel.appendLine(`Generated message: ${message}`);
-                // Get git extension and fill in the message
-                const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports;
-                if (!gitExtension) {
-                    vscode.window.showErrorMessage('Git extension not found');
-                    return;
-                }
-                const git = gitExtension.getAPI(1);
-                if (!git.repositories || git.repositories.length === 0) {
-                    vscode.window.showErrorMessage('No git repository found');
-                    return;
-                }
-                const repo = git.repositories[0];
-                repo.inputBox.value = message;
-                vscode.window.showInformationMessage('Commit message generated and filled!');
-                outputChannel.appendLine(`[${new Date().toISOString()}] Message filled successfully`);
+            const message = await (0, llm_1.generateCommitMessage)({
+                apiBaseUrl: config.getApiBaseUrl(),
+                apiKey,
+                model: config.getModel(),
+                language: config.getLanguage(),
+                diff,
+                outputChannel,
             });
+            outputChannel.appendLine(`Generated message: ${message}`);
+            // Get git extension and fill in the message
+            const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports;
+            if (!gitExtension) {
+                vscode.window.showErrorMessage('Git extension not found');
+                return;
+            }
+            const git = gitExtension.getAPI(1);
+            if (!git.repositories || git.repositories.length === 0) {
+                vscode.window.showErrorMessage('No git repository found');
+                return;
+            }
+            const repo = git.repositories[0];
+            repo.inputBox.value = message;
+            showSuccessStatus(statusBarItem);
+            vscode.window.showInformationMessage('Commit message generated and filled!');
+            outputChannel.appendLine(`[${new Date().toISOString()}] Message filled successfully`);
         }
         catch (error) {
             console.error('Error:', error);
             const message = error instanceof Error ? error.message : String(error);
+            showErrorStatus(statusBarItem);
             vscode.window.showErrorMessage(`Failed: ${message}`);
             outputChannel.appendLine(`[ERROR] ${message}`);
         }
+        finally {
+            clearStatus(statusBarItem);
+        }
+    });
+    const generateTitleCmd = vscode.commands.registerCommand('commitMessageHelper.generateMessageTitle', async () => {
+        await vscode.commands.executeCommand('commitMessageHelper.generateMessage');
     });
     const sidebarProvider = new CommitMessageSidebarProvider(context, outputChannel);
     const sidebarRegistration = vscode.window.registerWebviewViewProvider(CommitMessageSidebarProvider.viewType, sidebarProvider);
-    context.subscriptions.push(setApiKeyCmd, generateCmd, sidebarRegistration);
+    context.subscriptions.push(setApiKeyCmd, generateCmd, generateTitleCmd, sidebarRegistration, statusBarItem);
     console.log('=== Commit Message Helper activated successfully ===');
 }
 function deactivate() { }
@@ -371,4 +374,24 @@ function getNonce() {
         result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
+}
+function showGeneratingStatus(statusBarItem) {
+    statusBarItem.text = '$(sync~spin) QCommit: Generating commit message...';
+    statusBarItem.tooltip = 'QCommit is generating a commit message';
+    statusBarItem.show();
+}
+function showSuccessStatus(statusBarItem) {
+    statusBarItem.text = '$(check) QCommit: Commit message ready';
+    statusBarItem.tooltip = 'Commit message generated successfully';
+    statusBarItem.show();
+}
+function showErrorStatus(statusBarItem) {
+    statusBarItem.text = '$(error) QCommit: Generation failed';
+    statusBarItem.tooltip = 'Commit message generation failed';
+    statusBarItem.show();
+}
+function clearStatus(statusBarItem) {
+    setTimeout(() => {
+        statusBarItem.hide();
+    }, 2500);
 }
