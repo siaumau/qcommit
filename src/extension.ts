@@ -329,18 +329,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         outputChannel.appendLine(`Staged diff length: ${diff.length}`);
 
-        const message = await generateCommitMessage({
-          apiBaseUrl: config.getApiBaseUrl(),
-          apiKey,
-          model: config.getModel(),
-          language: config.getLanguage(),
-          diff,
-          outputChannel,
-        });
-
-        outputChannel.appendLine(`Generated message: ${message}`);
-
-        // Get git extension and fill in the message
+        // Get git extension early for animation
         const gitExtension =
           vscode.extensions.getExtension('vscode.git')?.exports;
         if (!gitExtension) {
@@ -355,6 +344,24 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const repo = git.repositories[0];
+
+        // Start loading animation
+        let isGenerating = true;
+        startLoadingAnimation(repo, () => isGenerating);
+
+        const message = await generateCommitMessage({
+          apiBaseUrl: config.getApiBaseUrl(),
+          apiKey,
+          model: config.getModel(),
+          language: config.getLanguage(),
+          diff,
+          outputChannel,
+        });
+
+        // Stop animation
+        isGenerating = false;
+
+        outputChannel.appendLine(`Generated message: ${message}`);
         repo.inputBox.value = message;
 
         showSuccessStatus(statusBarItem);
@@ -452,4 +459,35 @@ function clearStatus(statusBarItem: vscode.StatusBarItem): void {
   setTimeout(() => {
     statusBarItem.hide();
   }, 2500);
+}
+
+function startLoadingAnimation(
+  repo: any,
+  isGenerating: () => boolean
+): void {
+  const loadingText = '處理中---';
+  let charIndex = 0;
+
+  const animateFrame = () => {
+    if (!isGenerating()) {
+      return;
+    }
+
+    // Show characters up to current index
+    repo.inputBox.value = loadingText.substring(0, charIndex + 1);
+
+    // Move to next character
+    charIndex += 1;
+
+    // Loop back when reaching the end
+    if (charIndex > loadingText.length) {
+      charIndex = 0; // Clear and restart
+      repo.inputBox.value = '';
+    }
+
+    // Continue animation
+    setTimeout(animateFrame, 150);
+  };
+
+  animateFrame();
 }
